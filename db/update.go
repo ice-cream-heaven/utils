@@ -7,8 +7,6 @@ import (
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
 	"strconv"
-
-	"github.com/bytedance/sonic"
 )
 
 // CASE WHEN (`a` = 1) THEN "1" WHEN (`b` = 2) THEN 2 ELSE 10 END
@@ -53,7 +51,7 @@ func UpdateCase[M string | *Cond](caseMap map[M]any, def ...interface{}) clause.
 				b.WriteString("0")
 			}
 		default:
-			buf, err := sonic.MarshalString(x)
+			buf, err := json.MarshalString(x)
 			if err != nil {
 				// NOTE: should not happen
 				log.Errorf("err:%v", err)
@@ -121,7 +119,7 @@ func UpdateCaseOneField(field string, caseMap map[any]any, def ...interface{}) c
 				b.WriteString("0")
 			}
 		default:
-			buf, err := sonic.MarshalString(x)
+			buf, err := json.MarshalString(x)
 			if err != nil {
 				// NOTE: should not happen
 				log.Errorf("err:%v", err)

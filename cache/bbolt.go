@@ -2,7 +2,6 @@ package cache
 
 import (
 	"github.com/beefsack/go-rate"
-	"github.com/bytedance/sonic"
 	"github.com/ice-cream-heaven/log"
 	"go.etcd.io/bbolt"
 	"gorm.io/gorm/utils"
@@ -113,7 +112,7 @@ func (p *Bbolt) clear() {
 
 		var item Item
 		return b.ForEach(func(k, v []byte) error {
-			err := sonic.Unmarshal(v, &item)
+			err := json.Unmarshal(v, &item)
 			if err != nil {
 				return err
 			}
@@ -156,7 +155,7 @@ func (p *Bbolt) Get(key string) (string, error) {
 		}
 
 		var item Item
-		err := sonic.Unmarshal(v, &value)
+		err := json.Unmarshal(v, &value)
 		if err != nil {
 			log.Error(err)
 			return err

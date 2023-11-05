@@ -2,7 +2,6 @@ package mq
 
 import (
 	"fmt"
-	"github.com/bytedance/sonic"
 	"github.com/elliotchance/pie/v2"
 	"github.com/ice-cream-heaven/log"
 	"github.com/ice-cream-heaven/utils/common"
@@ -94,7 +93,7 @@ func (p *Topic[M]) AddChannel(opt *Channel, logic func(msg *Message[M]) error) {
 			return nil
 		}
 
-		err = sonic.Unmarshal(m.Body, &msg)
+		err = json.Unmarshal(m.Body, &msg)
 		if err != nil {
 			log.Errorf("err:%v", err)
 			return channel.FinishMessage(clientId, m.ID)
@@ -156,7 +155,7 @@ func (p *Topic[M]) AddChannel(opt *Channel, logic func(msg *Message[M]) error) {
 func (p *Topic[M]) PushMsg(msg *Message[M]) error {
 	producerLoad()
 
-	body, err := sonic.Marshal(msg)
+	body, err := json.Marshal(msg)
 	if err != nil {
 		return err
 	}
@@ -183,7 +182,7 @@ func (p *Topic[M]) MultiPublishMsg(list []*Message[M]) error {
 	log.Infof("push %s %d msg", p.name, len(list))
 
 	return p.getTopic().PutMessages(pie.Map(list, func(m *Message[M]) *nsqd.Message {
-		body, err := sonic.Marshal(m)
+		body, err := json.Marshal(m)
 		if err != nil {
 			log.Errorf("err:%v", err)
 			return nil
@@ -206,7 +205,7 @@ func (p *Topic[M]) MultiPublish(list []M) error {
 }
 
 func (p *Topic[M]) DeferredPublishMsg(delay time.Duration, msg *Message[M]) error {
-	body, err := sonic.Marshal(msg)
+	body, err := json.Marshal(msg)
 	if err != nil {
 		return err
 	}

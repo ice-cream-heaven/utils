@@ -70,6 +70,11 @@ func UserHomeDir() string {
 	return path
 }
 
+func UserConfigDir() string {
+	path, _ := os.UserConfigDir()
+	return path
+}
+
 func UserCacheDir() string {
 	execPath, _ := os.UserCacheDir()
 	return execPath

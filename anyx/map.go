@@ -9,7 +9,6 @@ import (
 	"strings"
 	"sync"
 
-	"github.com/bytedance/sonic"
 	"go.uber.org/atomic"
 	"gopkg.in/yaml.v3"
 )
@@ -47,7 +46,7 @@ func NewMap(m map[string]interface{}) *Map {
 
 func NewMapWithJson(s []byte) (*Map, error) {
 	var m map[string]interface{}
-	err := sonic.Unmarshal(s, &m)
+	err := json.Unmarshal(s, &m)
 	if err != nil {
 		return nil, err
 	}
@@ -64,7 +63,7 @@ func NewMapWithYaml(s []byte) (*Map, error) {
 }
 
 func NewMapWithAny(s interface{}) (*Map, error) {
-	buf, err := sonic.Marshal(s)
+	buf, err := json.Marshal(s)
 	if err != nil {
 		return nil, err
 	}
@@ -354,14 +353,14 @@ func (p *Map) toMap(val interface{}) *Map {
 		return NewMap(nil)
 	case string:
 		var m map[string]interface{}
-		err := sonic.Unmarshal([]byte(x), &m)
+		err := json.Unmarshal([]byte(x), &m)
 		if err != nil {
 			return NewMap(nil)
 		}
 		return NewMap(m)
 	case []byte:
 		var m map[string]interface{}
-		err := sonic.Unmarshal(x, &m)
+		err := json.Unmarshal(x, &m)
 		if err != nil {
 			return NewMap(nil)
 		}
@@ -375,12 +374,12 @@ func (p *Map) toMap(val interface{}) *Map {
 		}
 		return m
 	default:
-		buf, err := sonic.Marshal(x)
+		buf, err := json.Marshal(x)
 		if err != nil {
 			return NewMap(nil)
 		}
 		var m map[string]interface{}
-		err = sonic.Unmarshal(buf, &m)
+		err = json.Unmarshal(buf, &m)
 		if err != nil {
 			return NewMap(nil)
 		}

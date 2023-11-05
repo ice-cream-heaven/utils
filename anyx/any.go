@@ -7,8 +7,6 @@ import (
 	"strconv"
 	"strings"
 	"time"
-
-	"github.com/bytedance/sonic"
 )
 
 func ToString(val interface{}) string {
@@ -61,7 +59,7 @@ func ToString(val interface{}) string {
 	case error:
 		return x.Error()
 	default:
-		buf, err := sonic.Marshal(x)
+		buf, err := json.Marshal(x)
 		if err != nil {
 			return ""
 		}

@@ -6,7 +6,6 @@ import (
 	"github.com/ice-cream-heaven/log"
 	"reflect"
 
-	"github.com/bytedance/sonic"
 	"github.com/mcuadros/go-defaults"
 	"github.com/pkg/errors"
 )
@@ -15,14 +14,14 @@ func Scan(src interface{}, dst interface{}) (err error) {
 	x := func(buf []byte) error {
 		bufLen := len(buf)
 		if bufLen >= 2 && buf[0] == '{' && buf[bufLen-1] == '}' {
-			err = sonic.Unmarshal(buf, dst)
+			err = json.Unmarshal(buf, dst)
 			if err != nil {
 				log.Errorf("err:%v", err)
 				return err
 			}
 			return nil
 		} else if bufLen > 0 {
-			err = sonic.Unmarshal(buf, dst)
+			err = json.Unmarshal(buf, dst)
 			if err != nil {
 				log.Errorf("err:%v", err)
 				return err
@@ -52,7 +51,7 @@ func Value(m interface{}) (value driver.Value, err error) {
 		defaults.SetDefaults(m)
 	}
 
-	value, err = sonic.Marshal(m)
+	value, err = json.Marshal(m)
 	if err != nil {
 		log.Errorf("err:%v", err)
 		return nil, err

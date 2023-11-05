@@ -1,7 +1,5 @@
 package cache
 
-import "github.com/bytedance/sonic"
-
 type baseCache struct {
 	BaseCache
 }
@@ -12,7 +10,7 @@ func (p *baseCache) GetJson(key string, j interface{}) error {
 		return err
 	}
 
-	return sonic.UnmarshalString(value, j)
+	return json.UnmarshalString(value, j)
 }
 
 func (p *baseCache) HGetJson(key, field string, j interface{}) error {
@@ -21,7 +19,7 @@ func (p *baseCache) HGetJson(key, field string, j interface{}) error {
 		return err
 	}
 
-	return sonic.UnmarshalString(value, j)
+	return json.UnmarshalString(value, j)
 }
 
 func newBaseCache(c BaseCache) Cache {

@@ -2,7 +2,6 @@ package cache
 
 import (
 	"errors"
-	"github.com/bytedance/sonic"
 	"github.com/garyburd/redigo/redis"
 	"go.etcd.io/bbolt"
 	"os"
@@ -122,11 +121,11 @@ type Item struct {
 }
 
 func (p *Item) Bytes() []byte {
-	buf, _ := sonic.Marshal(p)
+	buf, _ := json.Marshal(p)
 	return buf
 }
 
 func (p *Item) String() string {
-	str, _ := sonic.MarshalString(p)
+	str, _ := json.MarshalString(p)
 	return str
 }
