@@ -675,25 +675,6 @@ func (p *Scoop) update(updateMap map[string]interface{}) *UpdateResult {
 		}
 	}
 
-	if len(p.orders) > 0 {
-		sqlRaw.WriteString(" ORDER BY ")
-		sqlRaw.WriteString(p.orders[0])
-		for _, o := range p.orders[1:] {
-			sqlRaw.WriteString(", ")
-			sqlRaw.WriteString(o)
-		}
-	}
-
-	if p.limit > 0 {
-		sqlRaw.WriteString(" LIMIT ")
-		sqlRaw.WriteString(strconv.FormatUint(p.limit, 10))
-	}
-
-	if p.offset > 0 {
-		sqlRaw.WriteString(" OFFSET ")
-		sqlRaw.WriteString(strconv.FormatUint(p.offset, 10))
-	}
-
 	start := time.Now()
 	res := p._db.Exec(sqlRaw.String(), values...)
 	getDefaultLogger().Log(p.depth, start, func() (sql string, rowsAffected int64) {

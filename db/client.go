@@ -35,6 +35,7 @@ func New(c *Config, tables ...interface{}) (*Client, error) {
 		d = newSqlite(c)
 
 	case "mysql":
+		log.Infof("mysql://%s:******@%s:%d/%s", c.Username, c.Address, c.Port, c.Name)
 		d = mysql.New(mysql.Config{
 			DSN: fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?charset=utf8mb4&parseTime=True&loc=Local", c.Username, c.Password, c.Address, c.Port, c.Name),
 			DSNConfig: &mysqlC.Config{
@@ -58,6 +59,7 @@ func New(c *Config, tables ...interface{}) (*Client, error) {
 		})
 
 	case "postgres":
+		log.Infof("postgres://%s:******@%s:%d/%s", c.Username, c.Address, c.Port, c.Name)
 		d = postgres.New(postgres.Config{
 			DSN:                  fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=disable", c.Address, c.Port, c.Username, c.Password, c.Name),
 			PreferSimpleProtocol: true,
@@ -66,6 +68,7 @@ func New(c *Config, tables ...interface{}) (*Client, error) {
 		})
 
 	case "sqlserver":
+		log.Infof("sqlserver://%s:******@%s:%d/%s", c.Username, c.Address, c.Port, c.Name)
 		d = sqlserver.Open(fmt.Sprintf("sqlserver://%s:%s@%s:%d?database=%s", c.Username, c.Password, c.Address, c.Port, c.Name))
 
 	default:
