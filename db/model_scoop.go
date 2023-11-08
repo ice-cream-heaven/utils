@@ -2,6 +2,7 @@ package db
 
 import (
 	"fmt"
+	"github.com/ice-cream-heaven/log"
 	"gorm.io/gorm"
 )
 
@@ -314,6 +315,7 @@ func (p *ModelScoop[M]) CreateOrUpdate(values map[string]interface{}, m *M) *Cre
 	err := p.Scoop.First(&old).Error
 	if err != nil {
 		if !p.IsNotFound(err) {
+			log.Errorf("err:%s", err)
 			return &CreateOrUpdateResult[M]{
 				Error: err,
 			}
@@ -322,6 +324,7 @@ func (p *ModelScoop[M]) CreateOrUpdate(values map[string]interface{}, m *M) *Cre
 
 		err = p.Scoop.Create(m).Error
 		if err != nil {
+			log.Errorf("err:%s", err)
 			return &CreateOrUpdateResult[M]{
 				Error: err,
 			}
@@ -335,6 +338,7 @@ func (p *ModelScoop[M]) CreateOrUpdate(values map[string]interface{}, m *M) *Cre
 		// 更新
 		err = p.Scoop.Updates(values).Error
 		if err != nil {
+			log.Errorf("err:%s", err)
 			return &CreateOrUpdateResult[M]{
 				Error: err,
 			}
@@ -342,6 +346,9 @@ func (p *ModelScoop[M]) CreateOrUpdate(values map[string]interface{}, m *M) *Cre
 
 		err = p.Scoop.First(&old).Error
 		if err != nil {
+			if !p.Scoop.IsNotFound(err) {
+				log.Errorf("err:%s", err)
+			}
 			return &CreateOrUpdateResult[M]{
 				Error: err,
 			}

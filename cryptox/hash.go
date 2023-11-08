@@ -10,7 +10,6 @@ import (
 func Md5[M string | []byte](s M) string {
 	return fmt.Sprintf("%x", md5.Sum([]byte(s)))
 }
-
 func Sha256[M string | []byte](s M) string {
 	return fmt.Sprintf("%x", sha256.Sum256([]byte(s)))
 }
@@ -25,4 +24,12 @@ func Sha512[M string | []byte](s M) string {
 
 func Sha384[M string | []byte](s M) string {
 	return fmt.Sprintf("%x", sha512.Sum384([]byte(s)))
+}
+
+func Sha512_256[M string | []byte](s M) string {
+	return fmt.Sprintf("%x", sha512.Sum512_256([]byte(s)))
+}
+
+func Sha512_224[M string | []byte](s M) string {
+	return fmt.Sprintf("%x", sha512.Sum512_224([]byte(s)))
 }

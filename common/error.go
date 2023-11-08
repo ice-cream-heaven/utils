@@ -193,7 +193,7 @@ func ErrThirdParty(format string, a ...interface{}) *Error {
 		return NewError(ThirdPartyError)
 	}
 
-	return NewErrorWithMsg(ThirdPartyError, format, a[1:]...)
+	return NewErrorWithMsg(ThirdPartyError, format, a...)
 }
 
 func NewErrorWithError(err error) *Error {
