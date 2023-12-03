@@ -2,6 +2,6 @@
 
 package pyroscope
 
-func Load() {
-	load()
+func Load(address string) {
+	load(address)
 }

@@ -1,6 +1,9 @@
 package stringx
 
-import "bytes"
+import (
+	"bytes"
+	"github.com/ice-cream-heaven/log"
+)
 
 // Camel2Snake 驼峰转蛇形
 func Camel2Snake(s string) string {
@@ -35,4 +38,25 @@ func Snake2Camel(s string) string {
 		}
 	}
 	return b.String()
+}
+
+// SplitLen 按长度分割字符串
+func SplitLen(s string, max int) []string {
+	var lines []string
+	b := log.GetBuffer()
+	defer log.PutBuffer(b)
+
+	for _, r := range []rune(s) {
+		b.WriteRune(r)
+		if b.Len() >= max {
+			lines = append(lines, b.String())
+			b.Reset()
+		}
+	}
+
+	if b.Len() > 0 {
+		lines = append(lines, b.String())
+	}
+
+	return lines
 }

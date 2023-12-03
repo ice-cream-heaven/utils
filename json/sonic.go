@@ -1,4 +1,5 @@
-//go:build !(((windows || linux) && arm) || android || freebsd || (linux && 386))
+//go:build linux && amd64
+// +build linux,amd64
 
 package json
 

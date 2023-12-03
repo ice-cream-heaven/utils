@@ -1,5 +1,7 @@
 package cache
 
+import "github.com/ice-cream-heaven/utils/json"
+
 type baseCache struct {
 	BaseCache
 }
