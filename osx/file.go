@@ -1,7 +1,6 @@
 package osx
 
 import (
-	"bytes"
 	"io"
 	"os"
 )
@@ -71,14 +70,14 @@ func Copy(src, dst string) error {
 	return nil
 }
 
-func Append(path string, b *bytes.Buffer) error {
-	file, err := os.OpenFile(path, os.O_CREATE|os.O_APPEND|os.O_TRUNC, 0666)
+func Append(path string, b []byte) error {
+	file, err := os.OpenFile(path, os.O_APPEND|os.O_TRUNC, 0666)
 	if err != nil {
 		return err
 	}
 	defer file.Close()
 
-	_, err = io.Copy(file, b)
+	_, err = file.Write(b)
 	if err != nil {
 		return err
 	}
