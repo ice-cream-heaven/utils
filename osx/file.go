@@ -71,13 +71,13 @@ func Copy(src, dst string) error {
 }
 
 func Append(path string, b []byte) error {
-	file, err := os.OpenFile(path, os.O_APPEND|os.O_TRUNC, 0666)
+	file, err := os.OpenFile(path, os.O_WRONLY|os.O_APPEND, 0)
 	if err != nil {
 		return err
 	}
 	defer file.Close()
 
-	_, err = file.Write(b)
+	_, err = file.WriteString(string(b))
 	if err != nil {
 		return err
 	}
