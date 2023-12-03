@@ -78,7 +78,7 @@ func Append(path string, b *bytes.Buffer) error {
 	}
 	defer file.Close()
 
-	_, err = io.Copy(file, b)
+	_, err = b.WriteTo(file)
 	if err != nil {
 		return err
 	}
