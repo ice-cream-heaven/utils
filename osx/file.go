@@ -1,6 +1,7 @@
 package osx
 
 import (
+	"bytes"
 	"io"
 	"os"
 )
@@ -63,6 +64,21 @@ func Copy(src, dst string) error {
 	defer dstFile.Close()
 
 	_, err = io.Copy(dstFile, srcFile)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func Append(path string, b *bytes.Buffer) error {
+	file, err := os.OpenFile(path, os.O_WRONLY|os.O_TRUNC, 0666)
+	if err != nil {
+		return err
+	}
+	defer file.Close()
+
+	_, err = io.Copy(file, b)
 	if err != nil {
 		return err
 	}
