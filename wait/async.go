@@ -15,7 +15,7 @@ var (
 )
 
 func Async[M any](process int, push func(chan M), logic func(M)) {
-	c := make(chan M)
+	c := make(chan M, process)
 
 	w := Wgp.Get().(*sync.WaitGroup)
 	defer Wgp.Put(w)
