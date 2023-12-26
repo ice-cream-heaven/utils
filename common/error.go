@@ -89,6 +89,7 @@ const (
 	TokenNotFound   = 1003
 	OptionConflict  = 1004
 	ThirdPartyError = 1005
+	RetryError      = 1006
 
 	// 业务错误
 )
@@ -194,6 +195,14 @@ func ErrThirdParty(format string, a ...interface{}) *Error {
 	}
 
 	return NewErrorWithMsg(ThirdPartyError, format, a...)
+}
+
+func ErrRetry(format string, a ...interface{}) *Error {
+	if format == "" {
+		return NewError(RetryError).SetRetry(true)
+	}
+
+	return NewErrorWithMsg(RetryError, format, a...).SetRetry(true)
 }
 
 func NewErrorWithError(err error) *Error {

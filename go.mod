@@ -2,33 +2,31 @@ module github.com/ice-cream-heaven/utils
 
 go 1.21
 
-toolchain go1.21.1
-
 require (
 	github.com/GoogleCloudPlatform/cloudsql-proxy v1.33.10
+	github.com/agiledragon/gomonkey/v2 v2.11.0
 	github.com/andybalholm/brotli v1.0.6
 	github.com/beefsack/go-rate v0.0.0-20220214233405-116f4ca011a0
 	github.com/bytedance/sonic v1.10.2
-	github.com/elliotchance/pie/v2 v2.7.0
+	github.com/elliotchance/pie/v2 v2.8.0
 	github.com/garyburd/redigo v1.6.4
 	github.com/glebarez/sqlite v1.9.0
 	github.com/go-playground/validator/v10 v10.16.0
 	github.com/go-sql-driver/mysql v1.7.1
-	github.com/gofiber/fiber/v2 v2.50.0
-	github.com/google/uuid v1.4.0
+	github.com/gofiber/fiber/v2 v2.51.0
+	github.com/google/uuid v1.5.0
 	github.com/gookit/color v1.5.4
 	github.com/grafana/pyroscope-go v1.0.3
 	github.com/ice-cream-heaven/log v0.0.0-20230715032903-f1d27cf7b685
 	github.com/jchavannes/go-pgp v0.0.0-20200131171414-e5978e6d02b4
 	github.com/mcuadros/go-defaults v1.2.0
-	github.com/nsqio/nsq v1.2.1
 	github.com/pkg/errors v0.9.1
-	github.com/pterm/pterm v0.12.66
+	github.com/pterm/pterm v0.12.72
 	github.com/shomali11/xredis v0.0.0-20190608143638-0b54a6bbf40b
-	github.com/valyala/fasthttp v1.50.0
+	github.com/valyala/fasthttp v1.51.0
 	go.etcd.io/bbolt v1.3.7
 	go.uber.org/atomic v1.11.0
-	golang.org/x/crypto v0.16.0
+	golang.org/x/crypto v0.17.0
 	golang.org/x/exp v0.0.0-20231127185646-65229373498e
 	gopkg.in/yaml.v3 v3.0.1
 	gorm.io/driver/mysql v1.5.1
@@ -46,8 +44,6 @@ require (
 	cloud.google.com/go/compute v1.23.0 // indirect
 	cloud.google.com/go/compute/metadata v0.2.3 // indirect
 	github.com/FZambia/go-sentinel v0.0.0-20171204085413-76bd05e8e22f // indirect
-	github.com/blang/semver v3.5.1+incompatible // indirect
-	github.com/bmizerany/perks v0.0.0-20230307044200-03f9df79da1e // indirect
 	github.com/chenzhuoyu/base64x v0.0.0-20230717121745-296ad89f973d // indirect
 	github.com/chenzhuoyu/iasm v0.9.1 // indirect
 	github.com/containerd/console v1.0.3 // indirect
@@ -61,7 +57,7 @@ require (
 	github.com/golang-sql/sqlexp v0.1.0 // indirect
 	github.com/golang/groupcache v0.0.0-20210331224755-41bb18bfe9da // indirect
 	github.com/golang/protobuf v1.5.3 // indirect
-	github.com/golang/snappy v0.0.4 // indirect
+	github.com/google/go-cmp v0.6.0 // indirect
 	github.com/google/pprof v0.0.0-20231101202521-4ca4178f5c7a // indirect
 	github.com/google/s2a-go v0.1.7 // indirect
 	github.com/googleapis/enterprise-certificate-proxy v0.3.1 // indirect
@@ -72,8 +68,7 @@ require (
 	github.com/jackc/pgx/v5 v5.4.3 // indirect
 	github.com/jinzhu/inflection v1.0.0 // indirect
 	github.com/jinzhu/now v1.1.5 // indirect
-	github.com/julienschmidt/httprouter v1.3.0 // indirect
-	github.com/klauspost/compress v1.17.2 // indirect
+	github.com/klauspost/compress v1.17.4 // indirect
 	github.com/klauspost/cpuid/v2 v2.2.6 // indirect
 	github.com/kr/pretty v0.3.1 // indirect
 	github.com/leodido/go-urn v1.2.4 // indirect
@@ -82,14 +77,12 @@ require (
 	github.com/lib/pq v1.10.9 // indirect
 	github.com/lithammer/fuzzysearch v1.1.8 // indirect
 	github.com/mattn/go-colorable v0.1.13 // indirect
-	github.com/mattn/go-isatty v0.0.19 // indirect
+	github.com/mattn/go-isatty v0.0.20 // indirect
 	github.com/mattn/go-runewidth v0.0.15 // indirect
 	github.com/mattn/go-sqlite3 v1.14.17 // indirect
 	github.com/microsoft/go-mssqldb v1.6.0 // indirect
 	github.com/nats-io/nuid v1.0.1 // indirect
-	github.com/nsqio/go-diskqueue v1.1.0 // indirect
-	github.com/nsqio/go-nsq v1.1.0 // indirect
-	github.com/petermattis/goid v0.0.0-20230904192822-1876fd5063bc // indirect
+	github.com/petermattis/goid v0.0.0-20231207134359-e60b3f734c67 // indirect
 	github.com/pmezard/go-difflib v1.0.1-0.20181226105442-5d4384ee4fb2 // indirect
 	github.com/remyoudompheng/bigfft v0.0.0-20230129092748-24d4a6f8daec // indirect
 	github.com/rivo/uniseg v0.4.4 // indirect
