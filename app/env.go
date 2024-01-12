@@ -8,6 +8,8 @@ var (
 
 	BuildDate string
 
+	GoVersion string
+
 	GoOS    string
 	Goarch  string
 	Goarm   string

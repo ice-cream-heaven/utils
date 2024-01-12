@@ -1,5 +1,4 @@
-//go:build solaris
-// +build solaris
+//go:build linux && arm64
 
 package runtime
 

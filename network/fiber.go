@@ -29,6 +29,27 @@ func RealIpFromHeader(header http.Header) string {
 		}
 	}
 
+	val = header.Get("Cf-Pseudo-Ipv4")
+	if val != "" {
+		if !IsLocalIp(val) {
+			return val
+		}
+	}
+
+	val = header.Get("Cf-Connecting-Ipv6")
+	if val != "" {
+		if !IsLocalIp(val) {
+			return val
+		}
+	}
+
+	val = header.Get("Cf-Pseudo-Ipv6")
+	if val != "" {
+		if !IsLocalIp(val) {
+			return val
+		}
+	}
+
 	val = header.Get("Fastly-Client-Ip")
 	if val != "" {
 		if !IsLocalIp(val) {

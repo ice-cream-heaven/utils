@@ -15,6 +15,41 @@ type Mem struct {
 	rt   *rate.RateLimiter
 }
 
+func (p *Mem) IncrBy(key string, value int64) (int64, error) {
+	//TODO implement me
+	panic("implement me")
+}
+
+func (p *Mem) DecrBy(key string, value int64) (int64, error) {
+	//TODO implement me
+	panic("implement me")
+}
+
+func (p *Mem) Expire(key string, timeout time.Duration) (bool, error) {
+	//TODO implement me
+	panic("implement me")
+}
+
+func (p *Mem) Ttl(key string) (time.Duration, error) {
+	//TODO implement me
+	panic("implement me")
+}
+
+func (p *Mem) Incr(key string) (int64, error) {
+	//TODO implement me
+	panic("implement me")
+}
+
+func (p *Mem) Decr(key string) (int64, error) {
+	//TODO implement me
+	panic("implement me")
+}
+
+func (p *Mem) Exists(keys ...string) (bool, error) {
+	//TODO implement me
+	panic("implement me")
+}
+
 func (p *Mem) HIncr(key string, subKey string) (int64, error) {
 	//TODO implement me
 	panic("implement me")

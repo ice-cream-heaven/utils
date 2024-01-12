@@ -7,6 +7,7 @@ import (
 	"github.com/ice-cream-heaven/log"
 	"github.com/ice-cream-heaven/utils/stringx"
 	"gorm.io/gorm"
+	"gorm.io/gorm/clause"
 	"reflect"
 	"strconv"
 	"time"
@@ -27,6 +28,8 @@ type Scoop struct {
 	groups        []string
 	orders        []string
 	unscoped      bool
+
+	ignore bool
 
 	depth int
 }
@@ -189,6 +192,15 @@ func (p *Scoop) Group(fields ...string) *Scoop {
 
 func (p *Scoop) Order(fields ...string) *Scoop {
 	p.orders = append(p.orders, fields...)
+	return p
+}
+
+func (p *Scoop) Ignore(b ...bool) *Scoop {
+	if len(b) == 0 {
+		p.ignore = true
+		return p
+	}
+	p.ignore = b[0]
 	return p
 }
 
@@ -564,6 +576,10 @@ type CreateInBatchesResult struct {
 func (p *Scoop) CreateInBatches(value interface{}, batchSize int) *CreateInBatchesResult {
 	p.inc()
 	defer p.dec()
+
+	if p.ignore {
+		p._db.Clauses(clause.Insert{Modifier: "IGNORE"})
+	}
 
 	res := p._db.CreateInBatches(value, batchSize)
 	return &CreateInBatchesResult{

@@ -266,6 +266,18 @@ func (p *Error) SetErrCode(code int32) *Error {
 	return p
 }
 
+func (p *Error) Is(err error) bool {
+	if err == nil {
+		return false
+	}
+
+	if x, ok := err.(*Error); ok {
+		return x.Code == p.Code
+	} else {
+		return false
+	}
+}
+
 func GetErrCode(err error) int32 {
 	if err == nil {
 		return 0

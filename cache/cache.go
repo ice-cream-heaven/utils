@@ -20,6 +20,16 @@ type BaseCache interface {
 	SetNx(key string, value interface{}) (bool, error)
 	SetNxWithTimeout(key string, value interface{}, timeout time.Duration) (bool, error)
 
+	Ttl(key string) (time.Duration, error)
+	Expire(key string, timeout time.Duration) (bool, error)
+
+	Incr(key string) (int64, error)
+	Decr(key string) (int64, error)
+	IncrBy(key string, value int64) (int64, error)
+	DecrBy(key string, value int64) (int64, error)
+
+	Exists(keys ...string) (bool, error)
+
 	HSet(key string, field string, value interface{}) (bool, error)
 	HGet(key, field string) (string, error)
 	HDel(key string, fields ...string) (int64, error)

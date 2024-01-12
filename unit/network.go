@@ -26,10 +26,8 @@ const (
 )
 
 func FormatSpeedWithUnit(speed float64) (string, string) {
-	if speed < 0 {
+	if speed <= 0 {
 		return "——", "——"
-	} else if speed == 0 {
-		return "0", "bps"
 	} else if speed < Kb/8 {
 		return strconv.FormatFloat(speed*8, 'f', 2, 64), "bps"
 	} else if speed < Mb/8 {
@@ -46,14 +44,12 @@ func FormatSpeedWithUnit(speed float64) (string, string) {
 }
 
 func FormatSpeed(speed float64) string {
-	return Format2Bs(speed)
+	return Format2bps(speed)
 }
 
 func Format2bps(speed float64) string {
-	if speed < 0 {
+	if speed <= 0 {
 		return "——"
-	} else if speed == 0 {
-		return "0bps"
 	} else if speed < Kb/8 {
 		return fmt.Sprintf("%.2fbps", speed*8)
 	} else if speed < Mb/8 {
@@ -70,10 +66,8 @@ func Format2bps(speed float64) string {
 }
 
 func Format2Bs(speed float64) string {
-	if speed < 0 {
+	if speed <= 0 {
 		return "——"
-	} else if speed == 0 {
-		return "0B/s"
 	} else if speed < Kb {
 		return fmt.Sprintf("%.2fB/s", speed)
 	} else if speed < Mb {

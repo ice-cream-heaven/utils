@@ -1,5 +1,5 @@
-//go:build linux && !mips64 && !mips64le && !mips && !mipsle
-// +build linux,!mips64,!mips64le,!mips,!mipsle
+//go:build linux && !mips64 && !mips64le && !mips && !mipsle && !arm64
+// +build linux,!mips64,!mips64le,!mips,!mipsle,!arm64
 
 package runtime
 
@@ -9,23 +9,12 @@ import (
 )
 
 var exitSignal = []os.Signal{
-	os.Interrupt,
-	syscall.SIGHUP,
-	syscall.SIGINT,
-	syscall.SIGQUIT,
-	syscall.SIGILL,
-	syscall.SIGABRT,
-	syscall.SIGBUS,
-	syscall.SIGKILL,
-	syscall.SIGSEGV,
-	syscall.SIGSYS,
-	syscall.SIGTERM,
-	syscall.SIGCONT,
-	syscall.SIGSTOP,
-	syscall.SIGTRAP,
-	syscall.SIGTSTP,
-	syscall.SIGPWR,
-	syscall.SIGPIPE,
-	syscall.SIGSTKFLT,
-	syscall.SIGFPE,
+	syscall.SIGINT,  // 中断
+	syscall.SIGQUIT, // 退出
+	syscall.SIGABRT, // 中止
+	syscall.SIGKILL, // kill信号
+	syscall.SIGTERM, // 终止信号
+	syscall.SIGSTOP, // 进程停止
+	syscall.SIGTRAP, // 陷阱
+	syscall.SIGTSTP, // 终端停止
 }

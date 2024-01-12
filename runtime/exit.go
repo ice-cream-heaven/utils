@@ -12,7 +12,7 @@ func GetExitSign() chan os.Signal {
 	return sigCh
 }
 
-func WaitExist() {
+func WaitExit() {
 	sign := GetExitSign()
 	<-sign
 }

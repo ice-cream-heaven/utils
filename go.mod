@@ -27,7 +27,7 @@ require (
 	go.etcd.io/bbolt v1.3.7
 	go.uber.org/atomic v1.11.0
 	golang.org/x/crypto v0.17.0
-	golang.org/x/exp v0.0.0-20231127185646-65229373498e
+	golang.org/x/exp v0.0.0-20231206192017-f3f8817b8deb
 	gopkg.in/yaml.v3 v3.0.1
 	gorm.io/driver/mysql v1.5.1
 	gorm.io/driver/postgres v1.5.2
@@ -86,7 +86,7 @@ require (
 	github.com/pmezard/go-difflib v1.0.1-0.20181226105442-5d4384ee4fb2 // indirect
 	github.com/remyoudompheng/bigfft v0.0.0-20230129092748-24d4a6f8daec // indirect
 	github.com/rivo/uniseg v0.4.4 // indirect
-	github.com/rogpeppe/go-internal v1.11.0 // indirect
+	github.com/rogpeppe/go-internal v1.12.0 // indirect
 	github.com/twitchyliquid64/golang-asm v0.15.1 // indirect
 	github.com/valyala/bytebufferpool v1.0.0 // indirect
 	github.com/valyala/tcplisten v1.0.0 // indirect
@@ -101,7 +101,7 @@ require (
 	golang.org/x/sys v0.15.0 // indirect
 	golang.org/x/term v0.15.0 // indirect
 	golang.org/x/text v0.14.0 // indirect
-	golang.org/x/time v0.4.0 // indirect
+	golang.org/x/time v0.5.0 // indirect
 	google.golang.org/api v0.143.0 // indirect
 	google.golang.org/appengine v1.6.7 // indirect
 	google.golang.org/genproto/googleapis/rpc v0.0.0-20230920204549-e6e6cdab5c13 // indirect

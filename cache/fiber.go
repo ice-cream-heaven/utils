@@ -2,6 +2,7 @@ package cache
 
 import (
 	"github.com/gofiber/fiber/v2"
+	"github.com/ice-cream-heaven/log"
 	"time"
 )
 
@@ -33,9 +34,7 @@ func (p *FiberStorage) Delete(key string) error {
 }
 
 func (p *FiberStorage) Reset() error {
-	if x, ok := p.storage.(fiberStorage); ok {
-		return x.Reset()
-	}
+	log.Warnf("unsupported operation")
 	return nil
 }
 

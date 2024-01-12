@@ -18,6 +18,41 @@ type Bbolt struct {
 	rt   *rate.RateLimiter
 }
 
+func (p *Bbolt) IncrBy(key string, value int64) (int64, error) {
+	//TODO implement me
+	panic("implement me")
+}
+
+func (p *Bbolt) DecrBy(key string, value int64) (int64, error) {
+	//TODO implement me
+	panic("implement me")
+}
+
+func (p *Bbolt) Expire(key string, timeout time.Duration) (bool, error) {
+	//TODO implement me
+	panic("implement me")
+}
+
+func (p *Bbolt) Ttl(key string) (time.Duration, error) {
+	//TODO implement me
+	panic("implement me")
+}
+
+func (p *Bbolt) Incr(key string) (int64, error) {
+	//TODO implement me
+	panic("implement me")
+}
+
+func (p *Bbolt) Decr(key string) (int64, error) {
+	//TODO implement me
+	panic("implement me")
+}
+
+func (p *Bbolt) Exists(keys ...string) (bool, error) {
+	//TODO implement me
+	panic("implement me")
+}
+
 func (p *Bbolt) HIncr(key string, subKey string) (int64, error) {
 	//TODO implement me
 	panic("implement me")

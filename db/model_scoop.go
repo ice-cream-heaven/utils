@@ -134,6 +134,17 @@ func (p *ModelScoop[M]) Order(fields ...string) *ModelScoop[M] {
 	return p
 }
 
+func (p *ModelScoop[M]) Ignore(b ...bool) *ModelScoop[M] {
+	if len(b) == 0 {
+		p.ignore = true
+		return p
+	}
+
+	p.ignore = b[0]
+
+	return p
+}
+
 // ——————————操作——————————
 
 func (p *ModelScoop[M]) First() (*M, error) {

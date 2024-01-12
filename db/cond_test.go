@@ -32,3 +32,7 @@ func TestSubCond(t *testing.T) {
 func TestLike(t *testing.T) {
 	t.Log(db.Where("name", "like", "%a%").ToString())
 }
+
+func TestIn(t *testing.T) {
+	t.Log(db.Where("id", "in", []int{1, 2, 3}).ToString())
+}
