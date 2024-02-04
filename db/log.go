@@ -97,3 +97,10 @@ func (l *Logger) Log(skip int, begin time.Time, fc func() (sql string, rowsAffec
 		l.logger.Error(b.String())
 	}
 }
+
+type mysqlLogger struct {
+}
+
+func (*mysqlLogger) Print(v ...interface{}) {
+
+}

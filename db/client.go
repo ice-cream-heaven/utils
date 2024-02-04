@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/ice-cream-heaven/log"
 	"gorm.io/gorm/logger"
+	"reflect"
 	"time"
 
 	_ "github.com/GoogleCloudPlatform/cloudsql-proxy/proxy/dialers/postgres"
@@ -37,7 +38,9 @@ func New(c *Config, tables ...interface{}) (*Client, error) {
 	case "mysql":
 		log.Infof("mysql://%s:******@%s:%d/%s", c.Username, c.Address, c.Port, c.Name)
 		d = mysql.New(mysql.Config{
-			DSN: fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?charset=utf8mb4&parseTime=True&loc=Local", c.Username, c.Password, c.Address, c.Port, c.Name),
+			DriverName:    "",
+			ServerVersion: "",
+			DSN:           fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?charset=utf8mb4&parseTime=True&loc=Local", c.Username, c.Password, c.Address, c.Port, c.Name),
 			DSNConfig: &mysqlC.Config{
 				Timeout:                 time.Second * 5,
 				ReadTimeout:             time.Second * 30,
@@ -54,9 +57,19 @@ func New(c *Config, tables ...interface{}) (*Client, error) {
 				ParseTime:               true,
 			},
 			Conn:                          nil,
+			SkipInitializeWithVersion:     true,
 			DefaultStringSize:             500,
+			DefaultDatetimePrecision:      nil,
+			DisableWithReturning:          false,
+			DisableDatetimePrecision:      false,
+			DontSupportRenameIndex:        false,
+			DontSupportRenameColumn:       false,
+			DontSupportForShareClause:     false,
 			DontSupportNullAsDefaultValue: true,
+			DontSupportRenameColumnUnique: false,
 		})
+
+		_ = mysqlC.SetLogger(&mysqlLogger{})
 
 	case "postgres":
 		log.Infof("postgres://%s:******@%s:%d/%s", c.Username, c.Address, c.Port, c.Name)
@@ -79,15 +92,29 @@ func New(c *Config, tables ...interface{}) (*Client, error) {
 	p.db, err = gorm.Open(d, &gorm.Config{
 		SkipDefaultTransaction: true,
 		NamingStrategy: &schema.NamingStrategy{
-			TablePrefix:   "",
-			SingularTable: true,
+			TablePrefix:         "",
+			SingularTable:       true,
+			NameReplacer:        nil,
+			NoLowerCase:         false,
+			IdentifierMaxLength: 0,
 		},
 		FullSaveAssociations:                     false,
 		Logger:                                   c.Logger,
+		NowFunc:                                  nil,
+		DryRun:                                   false,
 		PrepareStmt:                              true,
+		DisableAutomaticPing:                     false,
 		DisableForeignKeyConstraintWhenMigrating: true,
+		IgnoreRelationshipsWhenMigrating:         true,
+		DisableNestedTransaction:                 false,
 		AllowGlobalUpdate:                        true,
+		QueryFields:                              false,
 		CreateBatchSize:                          100,
+		TranslateError:                           true,
+		ClauseBuilders:                           nil,
+		ConnPool:                                 nil,
+		Dialector:                                nil,
+		Plugins:                                  nil,
 	})
 	if err != nil {
 		log.Errorf("err:%v", err)
@@ -132,7 +159,26 @@ func New(c *Config, tables ...interface{}) (*Client, error) {
 }
 
 func (p *Client) AutoMigrate(dst ...interface{}) error {
-	return p.db.AutoMigrate(dst...)
+	for _, table := range dst {
+		err := p.db.AutoMigrate(table)
+		if err != nil {
+			log.Errorf("err:%v", err)
+
+			switch x := err.(type) {
+			case *mysqlC.MySQLError:
+				// do something here
+			default:
+				log.Errorf("err:%v", reflect.TypeOf(x))
+			}
+
+			if t, ok := table.(Tabler); ok {
+				log.Errorf("table: %s", t.TableName())
+			}
+			return err
+		}
+	}
+
+	return nil
 }
 
 func (p *Client) NewScoop() *Scoop {

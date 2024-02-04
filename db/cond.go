@@ -28,7 +28,8 @@ func quoteFieldName(name string) string {
 }
 
 func quoteStr(s string) string {
-	return fmt.Sprintf("'%s'", s)
+	return strconv.Quote(s)
+	//return fmt.Sprintf("'%s'", s)
 }
 
 func simpleTypeToStr(value interface{}, quoteSlice bool) string {
@@ -72,8 +73,11 @@ func simpleTypeToStr(value interface{}, quoteSlice bool) string {
 		return strconv.FormatUint(vo.Uint(), 10)
 	case reflect.Int32, reflect.Int64, reflect.Int16, reflect.Int8, reflect.Int:
 		return strconv.FormatInt(vo.Int(), 10)
+	case reflect.String:
+		return quoteStr(vo.String())
+	default:
+		return quoteStr(fmt.Sprintf("%v", value))
 	}
-	return quoteStr(fmt.Sprintf("%v", value))
 }
 
 func (p *Cond) whereRaw(cond string, values ...interface{}) {
@@ -355,6 +359,8 @@ func (p *Cond) where(args ...interface{}) {
 				}
 			}
 		}
+	default:
+		panic("unhandled default case")
 	}
 }
 

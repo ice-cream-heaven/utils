@@ -612,9 +612,18 @@ func (p *Scoop) Delete() *DeleteResult {
 	sqlRaw := log.GetBuffer()
 	defer log.PutBuffer(sqlRaw)
 
-	sqlRaw.WriteString("DELETE FROM")
-	sqlRaw.WriteString(" ")
-	sqlRaw.WriteString(p.table)
+	// 软删除
+	if !p.unscoped && p.hasDeletedAt {
+		sqlRaw.WriteString("UPDATE")
+		sqlRaw.WriteString(" ")
+		sqlRaw.WriteString(p.table)
+		sqlRaw.WriteString(" SET deleted_at = ")
+		sqlRaw.WriteString(strconv.FormatInt(time.Now().Unix(), 10))
+	} else {
+		sqlRaw.WriteString("DELETE FROM")
+		sqlRaw.WriteString(" ")
+		sqlRaw.WriteString(p.table)
+	}
 
 	if len(p.cond.conds) > 0 {
 		sqlRaw.WriteString(" WHERE ")

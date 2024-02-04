@@ -142,6 +142,57 @@ type Error struct {
 	RetryDelay     time.Duration `json:"retry_delay,omitempty" yaml:"retry_delay,omitempty"`
 }
 
+func (p *Error) Error() string {
+	return fmt.Sprintf("code:%d,msg:%s", p.Code, p.Msg)
+}
+
+func (p *Error) SetSkipRetryCount(b ...bool) *Error {
+	if len(b) == 0 {
+		p.SkipRetryCount = true
+	} else {
+		p.SkipRetryCount = b[0]
+	}
+
+	return p
+}
+
+func (p *Error) SetRetry(b ...bool) *Error {
+	if len(b) == 0 {
+		p.Retry = true
+	} else {
+		p.Retry = b[0]
+	}
+
+	return p
+}
+
+func (p *Error) SetRetryDelay(delay time.Duration) *Error {
+	p.Retry = true
+	p.RetryDelay = delay
+	return p
+}
+
+func (p *Error) NeedRetry() bool {
+	return p.Retry
+}
+
+func (p *Error) SetErrCode(code int32) *Error {
+	p.Code = code
+	return p
+}
+
+func (p *Error) Is(err error) bool {
+	if err == nil {
+		return false
+	}
+
+	if x, ok := err.(*Error); ok {
+		return x.Code == p.Code
+	} else {
+		return false
+	}
+}
+
 func GetErrorMsgWithCode(code int32) string {
 	if err, ok := errMap[code]; ok {
 		return err.Msg
@@ -224,57 +275,6 @@ func NewErrorWithError(err error) *Error {
 			Code: SysError,
 			Msg:  err.Error(),
 		}
-	}
-}
-
-func (p *Error) Error() string {
-	return fmt.Sprintf("code:%d,msg:%s", p.Code, p.Msg)
-}
-
-func (p *Error) SetSkipRetryCount(b ...bool) *Error {
-	if len(b) == 0 {
-		p.SkipRetryCount = true
-	} else {
-		p.SkipRetryCount = b[0]
-	}
-
-	return p
-}
-
-func (p *Error) SetRetry(b ...bool) *Error {
-	if len(b) == 0 {
-		p.Retry = true
-	} else {
-		p.Retry = b[0]
-	}
-
-	return p
-}
-
-func (p *Error) SetRetryDelay(delay time.Duration) *Error {
-	p.Retry = true
-	p.RetryDelay = delay
-	return p
-}
-
-func (p *Error) NeedRetry() bool {
-	return p.Retry
-}
-
-func (p *Error) SetErrCode(code int32) *Error {
-	p.Code = code
-	return p
-}
-
-func (p *Error) Is(err error) bool {
-	if err == nil {
-		return false
-	}
-
-	if x, ok := err.(*Error); ok {
-		return x.Code == p.Code
-	} else {
-		return false
 	}
 }
 

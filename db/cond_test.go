@@ -2,6 +2,7 @@ package db_test
 
 import (
 	"github.com/ice-cream-heaven/utils/db"
+	"strconv"
 	"testing"
 )
 
@@ -35,4 +36,8 @@ func TestLike(t *testing.T) {
 
 func TestIn(t *testing.T) {
 	t.Log(db.Where("id", "in", []int{1, 2, 3}).ToString())
+}
+
+func TestQuote(t *testing.T) {
+	t.Log(strconv.Quote("a"))
 }

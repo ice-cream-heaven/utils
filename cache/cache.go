@@ -60,6 +60,8 @@ type Cache interface {
 
 	GetJson(key string, j interface{}) error
 	HGetJson(key, field string, j interface{}) error
+
+	Limit(key string, limit int64, timeout time.Duration) (bool, error)
 }
 
 type Config struct {
