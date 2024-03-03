@@ -58,7 +58,29 @@ type BaseCache interface {
 type Cache interface {
 	BaseCache
 
+	GetBool(key string) (bool, error)
+	GetInt(key string) (int, error)
+	GetUint(key string) (uint, error)
+	GetInt32(key string) (int32, error)
+	GetUint32(key string) (uint32, error)
+	GetInt64(key string) (int64, error)
+	GetUint64(key string) (uint64, error)
+	GetFloat32(key string) (float32, error)
+	GetFloat64(key string) (float64, error)
+
+	GetSlice(key string) ([]string, error)
+	GetBoolSlice(key string) ([]bool, error)
+	GetIntSlice(key string) ([]int, error)
+	GetUintSlice(key string) ([]uint, error)
+	GetInt32Slice(key string) ([]int32, error)
+	GetUint32Slice(key string) ([]uint32, error)
+	GetInt64Slice(key string) ([]int64, error)
+	GetUint64Slice(key string) ([]uint64, error)
+	GetFloat32Slice(key string) ([]float32, error)
+	GetFloat64Slice(key string) ([]float64, error)
+
 	GetJson(key string, j interface{}) error
+
 	HGetJson(key, field string, j interface{}) error
 
 	Limit(key string, limit int64, timeout time.Duration) (bool, error)

@@ -193,6 +193,16 @@ func (p *Error) Is(err error) bool {
 	}
 }
 
+func (p *Error) Clone() *Error {
+	return &Error{
+		Code:           p.Code,
+		Msg:            p.Msg,
+		SkipRetryCount: p.SkipRetryCount,
+		Retry:          p.Retry,
+		RetryDelay:     p.RetryDelay,
+	}
+}
+
 func GetErrorMsgWithCode(code int32) string {
 	if err, ok := errMap[code]; ok {
 		return err.Msg
@@ -203,7 +213,7 @@ func GetErrorMsgWithCode(code int32) string {
 
 func NewError[M int | int32](code M) *Error {
 	if err, ok := errMap[int32(code)]; ok {
-		return err
+		return err.Clone()
 	}
 
 	return NewErrorWithMsg(code, "")

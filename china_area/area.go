@@ -3,6 +3,7 @@ package china_area
 import (
 	"encoding/json"
 	"github.com/ice-cream-heaven/log"
+	"github.com/ice-cream-heaven/utils/osx"
 	"os"
 	"strings"
 )
@@ -39,7 +40,15 @@ func NewAreaManage() *AreaManage {
 }
 
 func (p *AreaManage) Load() error {
-	buf, err := os.ReadFile("./resources/china_area.json")
+	if !osx.IsDir("./resourcecode") {
+		err := os.MkdirAll("./resource", 0755)
+		if err != nil {
+			log.Errorf("err:%v", err)
+			return err
+		}
+	}
+
+	buf, err := os.ReadFile("./resource/china_area.json")
 	if err != nil {
 		log.Errorf("err:%v", err)
 
@@ -51,7 +60,7 @@ func (p *AreaManage) Load() error {
 			return err
 		}
 
-		buf, err = os.ReadFile("./resources/china_area.json")
+		buf, err = os.ReadFile("./resource/china_area.json")
 		if err != nil {
 			log.Errorf("err:%v", err)
 			return err

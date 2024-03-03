@@ -3,6 +3,7 @@ package db
 import (
 	"fmt"
 	"github.com/ice-cream-heaven/log"
+	"github.com/ice-cream-heaven/utils/anyx"
 	"gorm.io/gorm"
 )
 
@@ -241,6 +242,7 @@ func (p *ModelScoop[M]) UpdateOrCreate(values map[string]interface{}, m *M) *Upd
 				Object:    m,
 			}
 		}
+
 		return &UpdateOrCreateResult[M]{
 			Error: err,
 		}
@@ -259,6 +261,8 @@ func (p *ModelScoop[M]) UpdateOrCreate(values map[string]interface{}, m *M) *Upd
 			Error: err,
 		}
 	}
+
+	anyx.DeepCopy(&mm, m)
 
 	return &UpdateOrCreateResult[M]{
 		Object: &mm,
@@ -295,6 +299,9 @@ func (p *ModelScoop[M]) CreateNotExist(m *M) *CreateNotExistResult[M] {
 			Error: err,
 		}
 	}
+
+	anyx.DeepCopy(&mm, m)
+
 	return &CreateNotExistResult[M]{
 		Object: &mm,
 	}
@@ -365,11 +372,16 @@ func (p *ModelScoop[M]) CreateOrUpdate(values map[string]interface{}, m *M) *Cre
 			}
 		}
 
+		anyx.DeepCopy(&old, m)
+
 		return &CreateOrUpdateResult[M]{
 			Object:  &old,
 			Updated: true,
 		}
 	} else {
+
+		anyx.DeepCopy(&old, m)
+
 		return &CreateOrUpdateResult[M]{
 			Object: &old,
 		}

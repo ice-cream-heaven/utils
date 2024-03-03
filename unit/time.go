@@ -41,6 +41,40 @@ func DurationYearMonthDay(t time.Duration) string {
 	return b.String()
 }
 
+func DurationMonthDayHour(t time.Duration) string {
+	mouths := int(t.Hours() / 24 / 30)
+	t = t - time.Duration(mouths)*xtime.Month
+
+	days := int(t.Hours() / 24)
+	t = t - time.Duration(days)*xtime.Day
+
+	hours := int(t.Hours())
+	t = t - time.Duration(hours)*xtime.Hour
+
+	var b bytes.Buffer
+	if mouths > 0 {
+		b.WriteString(strconv.Itoa(mouths))
+		b.WriteString("月")
+	}
+
+	if days > 0 {
+		b.WriteString(strconv.Itoa(days))
+		b.WriteString("天")
+	}
+
+	if hours > 0 {
+		b.WriteString(strconv.Itoa(hours))
+		b.WriteString("小时")
+	}
+
+	// 如果都为0
+	if b.Len() == 0 {
+		b.WriteString("0小时")
+	}
+
+	return b.String()
+}
+
 func DurationMinuteSecond(t time.Duration) string {
 	minutes := int(t.Minutes())
 	t = t - time.Duration(minutes)*xtime.Minute

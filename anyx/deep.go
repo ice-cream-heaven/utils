@@ -103,3 +103,105 @@ func DeepEqual[M any](x, y M) bool {
 
 	return deepValueEqual(v1, v2)
 }
+
+func deepCopyValue(v1, v2 reflect.Value) {
+	if !v1.IsValid() || !v2.IsValid() {
+		return
+	}
+
+	if v1.Type() != v2.Type() {
+		return
+	}
+
+	switch v1.Kind() {
+	case reflect.Map:
+		if v1.IsNil() || v2.IsNil() {
+			v2.Set(v1)
+			return
+		}
+
+		if v1.UnsafePointer() == v2.UnsafePointer() {
+			return
+		}
+
+		v2.Set(reflect.MakeMap(v1.Type()))
+		for _, k := range v1.MapKeys() {
+			val1 := v1.MapIndex(k)
+			val2 := reflect.New(v2.Type().Elem()).Elem()
+			deepCopyValue(val1, val2)
+			v2.SetMapIndex(k, val2)
+		}
+
+	case reflect.Slice:
+		if v1.IsNil() || v2.IsNil() {
+			v2.Set(v1)
+			return
+		}
+
+		if v1.UnsafePointer() == v2.UnsafePointer() {
+			return
+		}
+
+		v2.Set(reflect.MakeSlice(v1.Type(), v1.Len(), v1.Len()))
+		for i := 0; i < v1.Len(); i++ {
+			val1 := v1.Index(i)
+			val2 := reflect.New(v2.Type().Elem()).Elem()
+			deepCopyValue(val1, val2)
+			v2.Index(i).Set(val2)
+		}
+
+	case reflect.Ptr:
+		if v1.IsNil() || v2.IsNil() {
+			v2.Set(v1)
+			return
+		}
+
+		if v1.UnsafePointer() == v2.UnsafePointer() {
+			return
+		}
+
+		val2 := reflect.New(v2.Type().Elem()).Elem()
+		deepCopyValue(v1.Elem(), val2)
+		v2.Elem().Set(val2)
+
+	case reflect.Array:
+		if v1.UnsafePointer() == v2.UnsafePointer() {
+			return
+		}
+
+		for i := 0; i < v1.Len(); i++ {
+			val1 := v1.Index(i)
+			val2 := reflect.New(v2.Type().Elem()).Elem()
+			deepCopyValue(val1, val2)
+			v2.Index(i).Set(val2)
+		}
+
+	case reflect.Struct:
+		for i := 0; i < v1.NumField(); i++ {
+			val1 := v1.Field(i)
+			val2 := reflect.New(v2.Field(i).Type()).Elem()
+			deepCopyValue(val1, val2)
+			v2.Field(i).Set(val2)
+		}
+
+	case reflect.Interface:
+		if v1.IsNil() || v2.IsNil() {
+			v2.Set(v1)
+			return
+		}
+
+		val2 := reflect.New(v2.Elem().Type()).Elem()
+		deepCopyValue(v1.Elem(), val2)
+		v2.Elem().Set(val2)
+
+	default:
+		v2.Set(v1)
+	}
+}
+
+func DeepCopy[M any](src, dst M) {
+	v1 := reflect.ValueOf(src)
+	v2 := reflect.ValueOf(dst)
+
+	deepCopyValue(v1, v2)
+}

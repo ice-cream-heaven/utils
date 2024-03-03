@@ -28,7 +28,7 @@ func download() error {
 		return common.NewError(resp.StatusCode)
 	}
 
-	file, err := os.OpenFile("./resources/china_area.json", os.O_CREATE|os.O_WRONLY, 0644)
+	file, err := os.OpenFile("./resource/china_area.json", os.O_CREATE|os.O_WRONLY|os.O_TRUNC, 0644)
 	if err != nil {
 		log.Errorf("err:%v", err)
 		return err
