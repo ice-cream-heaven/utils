@@ -90,6 +90,7 @@ const (
 	OptionConflict  = 1004
 	ThirdPartyError = 1005
 	RetryError      = 1006
+	InvalidToken    = 1007
 
 	// 业务错误
 )

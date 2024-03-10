@@ -97,11 +97,6 @@ func EncryptWithEntities(message []byte, entities openpgp.EntityList) ([]byte, e
 	buf := log.GetBuffer()
 	defer log.PutBuffer(buf)
 
-	//encoderWriter, err := armor.Encode(buf, "Message", make(map[string]string))
-	//if err != nil {
-	//	return []byte{}, fmt.Errorf("error creating OpenPGP armor: %v", err)
-	//}
-
 	encryptorWriter, err := openpgp.Encrypt(buf, entities, nil, nil, nil)
 	if err != nil {
 		return []byte{}, fmt.Errorf("error creating entity for encryption: %v", err)
@@ -116,7 +111,6 @@ func EncryptWithEntities(message []byte, entities openpgp.EntityList) ([]byte, e
 
 	_ = compressorWriter.Close()
 	_ = encryptorWriter.Close()
-	//_ = encoderWriter.Close()
 
 	return buf.Bytes(), nil
 }
@@ -126,13 +120,13 @@ func Decrypt(encrypted []byte) ([]byte, error) {
 }
 
 func DecryptWithEntities(encrypted []byte, entities openpgp.EntityList) ([]byte, error) {
-	//block, err := armor.Decode(bytes.NewReader(encrypted))
-	//if err != nil {
+	// block, err := armor.Decode(bytes.NewReader(encrypted))
+	// if err != nil {
 	//	return []byte{}, fmt.Errorf("error decoding: %v", err)
-	//}
-	//if block.Type != "Message" {
+	// }
+	// if block.Type != "Message" {
 	//	return []byte{}, errors.New("invalid message type")
-	//}
+	// }
 
 	messageReader, err := openpgp.ReadMessage(bytes.NewReader(encrypted), entities, nil, nil)
 	if err != nil {

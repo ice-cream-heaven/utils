@@ -5,6 +5,7 @@ import (
 	"crypto"
 	"github.com/ice-cream-heaven/utils/pgp"
 	"golang.org/x/crypto/openpgp/packet"
+	"os"
 	"testing"
 )
 
@@ -32,7 +33,7 @@ func TestGpg(t *testing.T) {
 		t.Fatalf("err:%v", err)
 	}
 
-	//t.Log(string(encrypt))
+	// t.Log(string(encrypt))
 
 	msg, err := pgp.Decrypt(encrypt)
 	if err != nil {
@@ -80,4 +81,25 @@ func TestGpgText(t *testing.T) {
 	}
 
 	t.Log("success")
+}
+
+func TestGen(t *testing.T) {
+	key, err := pgp.Gen("barbecue-desktop", "barbecue desktop", "barbecue.desktop@ice.org", &packet.Config{
+		Rand:                   nil,
+		DefaultHash:            crypto.SHA512,
+		DefaultCipher:          packet.CipherAES256,
+		Time:                   nil,
+		DefaultCompressionAlgo: packet.CompressionZLIB,
+		CompressionConfig: &packet.CompressionConfig{
+			Level: packet.BestCompression,
+		},
+		S2KCount: 65011712,
+		RSABits:  10240,
+	})
+	if err != nil {
+		t.Fatalf("err:%v", err)
+	}
+
+	_ = os.WriteFile("public.key", key.PublicKey, 0644)
+	_ = os.WriteFile("private.key", key.PrivateKey, 0644)
 }
