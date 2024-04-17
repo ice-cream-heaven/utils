@@ -21,13 +21,16 @@ func TestCond(t *testing.T) {
 
 // (a = 1 and b =2 ) or (a = 2 and b = 1)
 func TestSubCond(t *testing.T) {
-	t.Log(db.OrWhere(db.Where(map[string]any{
-		"a": 1,
-		"b": 2,
-	}), db.Where(map[string]any{
-		"a": 2,
-		"b": 3,
-	})).ToString())
+	t.Log(db.OrWhere(
+		db.Where(map[string]any{
+			"a": 1,
+			"b": 2,
+		}),
+		db.Where(map[string]any{
+			"a": 2,
+			"b": 3,
+		}),
+	).ToString())
 }
 
 func TestLike(t *testing.T) {

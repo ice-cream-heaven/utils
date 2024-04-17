@@ -3,7 +3,16 @@ package stringx
 import (
 	"bytes"
 	"github.com/ice-cream-heaven/log"
+	"unsafe"
 )
+
+func ToString(b []byte) string {
+	return *(*string)(unsafe.Pointer(&b))
+}
+
+func ToBytes(s string) []byte {
+	return *(*[]byte)(unsafe.Pointer(&s))
+}
 
 // Camel2Snake 驼峰转蛇形
 func Camel2Snake(s string) string {

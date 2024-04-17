@@ -8,9 +8,14 @@ import (
 	"strconv"
 	"strings"
 	"time"
+	"unsafe"
 )
 
 func ToString(val interface{}) string {
+	if val == nil {
+		return ""
+	}
+
 	switch x := val.(type) {
 	case bool:
 		if x {
@@ -18,43 +23,43 @@ func ToString(val interface{}) string {
 		}
 		return "0"
 	case int:
-		return fmt.Sprintf("%d", x)
+		return strconv.Itoa(x)
 	case int8:
-		return fmt.Sprintf("%d", x)
+		return strconv.FormatInt(int64(x), 10)
 	case int16:
-		return fmt.Sprintf("%d", x)
+		return strconv.FormatInt(int64(x), 10)
 	case int32:
-		return fmt.Sprintf("%d", x)
+		return strconv.FormatInt(int64(x), 10)
 	case int64:
-		return fmt.Sprintf("%d", x)
+		return strconv.FormatInt(x, 10)
 	case uint:
-		return fmt.Sprintf("%d", x)
+		return strconv.FormatUint(uint64(x), 10)
 	case uint8:
-		return fmt.Sprintf("%d", x)
+		return strconv.FormatUint(uint64(x), 10)
 	case uint16:
-		return fmt.Sprintf("%d", x)
+		return strconv.FormatUint(uint64(x), 10)
 	case uint32:
-		return fmt.Sprintf("%d", x)
+		return strconv.FormatUint(uint64(x), 10)
 	case uint64:
-		return fmt.Sprintf("%d", x)
+		return strconv.FormatUint(x, 10)
 	case float32:
 		if math.Floor(float64(x)) == float64(x) {
 			return fmt.Sprintf("%.0f", x)
 		}
 
-		return fmt.Sprintf("%f", x)
+		return strconv.FormatFloat(float64(x), 'f', -1, 32)
 	case float64:
 		if math.Floor(x) == x {
 			return fmt.Sprintf("%.0f", x)
 		}
 
-		return fmt.Sprintf("%f", x)
+		return strconv.FormatFloat(x, 'f', -1, 64)
 	case time.Duration:
 		return x.String()
 	case string:
 		return x
 	case []byte:
-		return string(x)
+		return *(*string)(unsafe.Pointer(&x))
 	case nil:
 		return ""
 	case error:
@@ -67,6 +72,140 @@ func ToString(val interface{}) string {
 
 		return string(buf)
 	}
+}
+
+func ToStringSlice(val interface{}, seqs ...string) []string {
+	var seq string
+	if len(seqs) > 0 {
+		seq = seqs[0]
+	}
+
+	switch x := val.(type) {
+	case []bool:
+		ss := make([]string, 0, len(x))
+		for _, v := range x {
+			if v {
+				ss = append(ss, "1")
+			} else {
+				ss = append(ss, "0")
+			}
+		}
+		return ss
+
+	case []int:
+		ss := make([]string, 0, len(x))
+		for _, v := range x {
+			ss = append(ss, strconv.Itoa(v))
+		}
+		return ss
+
+	case []int8:
+		ss := make([]string, 0, len(x))
+		for _, v := range x {
+			ss = append(ss, strconv.FormatInt(int64(v), 10))
+		}
+		return ss
+
+	case []int16:
+		ss := make([]string, 0, len(x))
+		for _, v := range x {
+			ss = append(ss, strconv.FormatInt(int64(v), 10))
+		}
+
+	case []int32:
+		ss := make([]string, 0, len(x))
+		for _, v := range x {
+			ss = append(ss, strconv.FormatInt(int64(v), 10))
+		}
+		return ss
+
+	case []int64:
+		ss := make([]string, 0, len(x))
+		for _, v := range x {
+			ss = append(ss, strconv.FormatInt(v, 10))
+		}
+		return ss
+
+	case []uint:
+		ss := make([]string, 0, len(x))
+		for _, v := range x {
+			ss = append(ss, strconv.FormatUint(uint64(v), 10))
+		}
+		return ss
+
+	case []uint16:
+		ss := make([]string, 0, len(x))
+		for _, v := range x {
+			ss = append(ss, strconv.FormatUint(uint64(v), 10))
+		}
+		return ss
+
+	case []uint32:
+		ss := make([]string, 0, len(x))
+		for _, v := range x {
+			ss = append(ss, strconv.FormatUint(uint64(v), 10))
+		}
+		return ss
+
+	case []uint64:
+		ss := make([]string, 0, len(x))
+		for _, v := range x {
+			ss = append(ss, strconv.FormatUint(v, 10))
+		}
+		return ss
+
+	case []float32:
+		ss := make([]string, 0, len(x))
+		for _, v := range x {
+			if math.Floor(float64(v)) == float64(v) {
+				ss = append(ss, strconv.FormatInt(int64(v), 10))
+			} else {
+				ss = append(ss, strconv.FormatFloat(float64(v), 'f', -1, 32))
+			}
+		}
+		return ss
+
+	case []float64:
+		ss := make([]string, 0, len(x))
+		for _, v := range x {
+			if math.Floor(v) == (v) {
+				ss = append(ss, strconv.FormatInt(int64(v), 10))
+			} else {
+				ss = append(ss, strconv.FormatFloat(v, 'f', -1, 32))
+			}
+		}
+		return ss
+
+	case []string:
+		return x
+
+	case []byte:
+		if seq == "" {
+			return []string{toString(x)}
+		}
+
+		return strings.Split(toString(x), seq)
+
+	case string:
+		if seq == "" {
+			return []string{x}
+		}
+
+		return strings.Split(x, seq)
+
+	case []interface{}:
+		ss := make([]string, 0, len(x))
+		for _, v := range x {
+			ss = append(ss, ToString(v))
+		}
+		return ss
+
+	default:
+		return nil
+
+	}
+
+	return nil
 }
 
 func ToInt(val interface{}) int {
@@ -882,4 +1021,12 @@ func ToUint64(val interface{}) uint64 {
 	default:
 		return 0
 	}
+}
+
+func toString(b []byte) string {
+	return *(*string)(unsafe.Pointer(&b))
+}
+
+func toBytes(s string) []byte {
+	return *(*[]byte)(unsafe.Pointer(&s))
 }

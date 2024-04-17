@@ -52,6 +52,11 @@ func Value(m interface{}) (value driver.Value, err error) {
 		defaults.SetDefaults(m)
 	}
 
+	if m == nil {
+		t := reflect.TypeOf(m)
+		m = reflect.New(t).Elem().Interface()
+	}
+
 	value, err = json.Marshal(m)
 	if err != nil {
 		log.Errorf("err:%v", err)

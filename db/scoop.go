@@ -29,7 +29,8 @@ type Scoop struct {
 	orders        []string
 	unscoped      bool
 
-	ignore bool
+	ignore  bool
+	replace bool
 
 	depth int
 }
@@ -67,14 +68,14 @@ func (p *Scoop) dec() {
 	p.depth--
 }
 
-//func (p *Scoop) Session(config ...*gorm.Session) *Scoop {
+// func (p *Scoop) Session(config ...*gorm.Session) *Scoop {
 //	if len(config) == 0 {
 //		return NewScoop(p._db.Session(&gorm.Session{
 //			NewDB: true,
 //		}))
 //	}
 //	return NewScoop(p._db.Session(config[0]))
-//}
+// }
 
 func (p *Scoop) Model(m any) *Scoop {
 	rt := reflect.ValueOf(m).Type()
@@ -201,6 +202,15 @@ func (p *Scoop) Ignore(b ...bool) *Scoop {
 		return p
 	}
 	p.ignore = b[0]
+	return p
+}
+
+func (p *Scoop) Replace(b ...bool) *Scoop {
+	if len(b) == 0 {
+		p.replace = true
+		return p
+	}
+	p.replace = b[0]
 	return p
 }
 

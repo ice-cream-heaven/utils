@@ -49,6 +49,19 @@ func Unique[T constraints.Ordered](ss []T) (ret []T) {
 	return
 }
 
+func UniqueUsing[T any](ss []T, f func(T) any) (ret []T) {
+	m := make(map[any]T)
+	for _, s := range ss {
+		m[(f(s))] = s
+	}
+
+	for _, s := range m {
+		ret = append(ret, s)
+	}
+
+	return
+}
+
 func Random[T any](ss []T) (ret T) {
 	if len(ss) == 0 {
 		return
@@ -135,9 +148,25 @@ func First[T any](ss []T) (ret T) {
 	return ss[0]
 }
 
+func FirstOr[T any](ss []T, or T) (ret T) {
+	if len(ss) == 0 {
+		return or
+	}
+
+	return ss[0]
+}
+
 func Last[T any](ss []T) (ret T) {
 	if len(ss) == 0 {
 		return
+	}
+
+	return ss[len(ss)-1]
+}
+
+func LastOr[T any](ss []T, or T) (ret T) {
+	if len(ss) == 0 {
+		return or
 	}
 
 	return ss[len(ss)-1]
@@ -166,6 +195,19 @@ func Average[T constraints.Integer | constraints.Float](ss []T) (ret T) {
 func Reverse[T any](ss []T) (ret []T) {
 	for i := len(ss) - 1; i >= 0; i-- {
 		ret = append(ret, ss[i])
+	}
+
+	return
+}
+
+func Chunk[T any](ss []T, size int) (ret [][]T) {
+	for i := 0; i < len(ss); i += size {
+		end := i + size
+		if end > len(ss) {
+			end = len(ss)
+		}
+
+		ret = append(ret, ss[i:end])
 	}
 
 	return

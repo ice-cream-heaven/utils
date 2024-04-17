@@ -8,7 +8,7 @@ import (
 	"os"
 )
 
-// docker run -it -p 4040:4040 pyroscope/pyroscope:latest server
+// docker run -it -p 4040:4040 --name=pyroscope pyroscope/pyroscope:latest server
 func load(address string) {
 	if address == "" {
 		address = "http://127.0.0.1:4040"

@@ -5,6 +5,7 @@ package json
 
 import (
 	"encoding/json"
+	"github.com/ice-cream-heaven/utils/stringx"
 	"io"
 )
 
@@ -21,11 +22,11 @@ func MarshalString(v any) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	return string(buf), nil
+	return stringx.ToString(buf), nil
 }
 
 func UnmarshalString(data string, v any) error {
-	return json.Unmarshal([]byte(data), v)
+	return json.Unmarshal(stringx.ToBytes(data), v)
 }
 
 func NewEncoder(w io.Writer) *json.Encoder {

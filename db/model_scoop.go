@@ -4,13 +4,21 @@ import (
 	"fmt"
 	"github.com/ice-cream-heaven/log"
 	"github.com/ice-cream-heaven/utils/anyx"
+	"github.com/ice-cream-heaven/utils/candy"
+	"github.com/ice-cream-heaven/utils/json"
 	"gorm.io/gorm"
+	"reflect"
+	"strconv"
+	"time"
 )
 
 type ModelScoop[M any] struct {
 	Scoop
 
 	m M
+
+	rt     reflect.Type
+	fields []*Field
 }
 
 func NewModelScoop[M any](db *gorm.DB) *ModelScoop[M] {
@@ -142,6 +150,17 @@ func (p *ModelScoop[M]) Ignore(b ...bool) *ModelScoop[M] {
 	}
 
 	p.ignore = b[0]
+
+	return p
+}
+
+func (p *ModelScoop[M]) Replace(b ...bool) *ModelScoop[M] {
+	if len(b) == 0 {
+		p.replace = true
+		return p
+	}
+
+	p.replace = b[0]
 
 	return p
 }
@@ -386,4 +405,157 @@ func (p *ModelScoop[M]) CreateOrUpdate(values map[string]interface{}, m *M) *Cre
 			Object: &old,
 		}
 	}
+}
+
+func (p *ModelScoop[M]) CreateInBatches(value []*M, batchSize int) *CreateInBatchesResult {
+	p.inc()
+	defer p.dec()
+
+	result := &CreateInBatchesResult{}
+
+	do := func(values []*M) error {
+		session := p._db.Session(&gorm.Session{})
+
+		sqlRaw := log.GetBuffer()
+		defer log.PutBuffer(sqlRaw)
+
+		if p.replace {
+			sqlRaw.WriteString("REPLACE ")
+		} else {
+			sqlRaw.WriteString("INSERT ")
+		}
+
+		if p.ignore {
+			sqlRaw.WriteString("IGNORE ")
+		}
+
+		sqlRaw.WriteString("INTO ")
+		sqlRaw.WriteString(p.table)
+
+		sqlRaw.WriteString(" (")
+		for _, field := range p.fields {
+			sqlRaw.WriteString(field.GormField)
+			sqlRaw.WriteString(",")
+		}
+		sqlRaw.Truncate(sqlRaw.Len() - 1)
+		sqlRaw.WriteString(") VALUES ")
+
+		for _, v := range values {
+			vv := reflect.ValueOf(v)
+			if vv.Kind() == reflect.Ptr {
+				vv = vv.Elem()
+			}
+
+			sqlRaw.WriteString("(")
+			for _, field := range p.fields {
+				switch field.GormField {
+				case "id":
+					if vv.FieldByName(field.Name).IsZero() {
+						sqlRaw.WriteString("NULL")
+						sqlRaw.WriteString(",")
+						continue
+					}
+
+				case "created_at", "updated_at":
+					sqlRaw.WriteString("NOW()")
+					sqlRaw.WriteString(",")
+
+				default:
+					// do nothing
+				}
+
+				if vv.FieldByName(field.Name).IsZero() {
+					switch field.Type {
+					case reflect.String:
+						sqlRaw.WriteString("''")
+
+					case reflect.Int, reflect.Int8, reflect.Int16, reflect.Int32, reflect.Int64:
+						sqlRaw.WriteString("0")
+
+					case reflect.Uint, reflect.Uint8, reflect.Uint16, reflect.Uint32, reflect.Uint64:
+						sqlRaw.WriteString("0")
+
+					case reflect.Float32, reflect.Float64:
+						sqlRaw.WriteString("0")
+
+					case reflect.Bool:
+						sqlRaw.WriteString("0")
+
+					case reflect.Ptr, reflect.Struct:
+						sqlRaw.WriteString("{}")
+
+					case reflect.Slice, reflect.Array:
+						sqlRaw.WriteString("[]")
+
+					default:
+						sqlRaw.WriteString("NULL")
+
+					}
+					sqlRaw.WriteString(",")
+					continue
+				}
+
+				switch field.Type {
+				case reflect.String:
+					sqlRaw.WriteString("'")
+					sqlRaw.WriteString(vv.FieldByName(field.Name).String())
+					sqlRaw.WriteString("'")
+
+				case reflect.Int, reflect.Int8, reflect.Int16, reflect.Int32, reflect.Int64:
+					sqlRaw.WriteString(strconv.FormatInt(vv.FieldByName(field.Name).Int(), 10))
+
+				case reflect.Uint, reflect.Uint8, reflect.Uint16, reflect.Uint32, reflect.Uint64:
+					sqlRaw.WriteString(strconv.FormatUint(vv.FieldByName(field.Name).Uint(), 10))
+
+				case reflect.Float32, reflect.Float64:
+					sqlRaw.WriteString(strconv.FormatFloat(vv.FieldByName(field.Name).Float(), 'f', -1, 64))
+
+				case reflect.Bool:
+					if vv.FieldByName(field.Name).Bool() {
+						sqlRaw.WriteString("1")
+					} else {
+						sqlRaw.WriteString("0")
+					}
+
+				default:
+					sqlRaw.WriteString("'")
+					sqlRaw.Write(json.MustMarshal(vv.FieldByName(field.Name).Interface()))
+					sqlRaw.WriteString("'")
+				}
+
+				sqlRaw.WriteString(",")
+			}
+
+			sqlRaw.WriteString("),")
+		}
+
+		sqlRaw.Grow(1)
+
+		start := time.Now()
+		session.Exec(sqlRaw.String())
+
+		getDefaultLogger().Log(p.depth, start, func() (sql string, rowsAffected int64) {
+			return sqlRaw.String(), session.RowsAffected
+		}, session.Error)
+
+		result.RowsAffected += session.RowsAffected
+
+		if p.ignore {
+			// do nothing
+		} else if session.Error != nil {
+			result.Error = session.Error
+			return session.Error
+		}
+
+		return nil
+	}
+
+	for _, values := range candy.Chunk(value, batchSize) {
+		err := do(values)
+		if err != nil {
+			return result
+		}
+	}
+
+	return result
 }

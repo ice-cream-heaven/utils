@@ -21,7 +21,7 @@ type Client struct {
 	db *gorm.DB
 }
 
-func New(c *Config, tables ...interface{}) (*Client, error) {
+func New(c *Config, tables ...Tabler) (*Client, error) {
 	p := &Client{}
 
 	c.apply()
@@ -158,8 +158,9 @@ func New(c *Config, tables ...interface{}) (*Client, error) {
 	return p, nil
 }
 
-func (p *Client) AutoMigrate(dst ...interface{}) error {
+func (p *Client) AutoMigrate(dst ...Tabler) error {
 	for _, table := range dst {
+		log.Infof("auto migrate %s", table.TableName())
 		err := p.db.AutoMigrate(table)
 		if err != nil {
 			log.Errorf("err:%v", err)
@@ -171,9 +172,7 @@ func (p *Client) AutoMigrate(dst ...interface{}) error {
 				log.Errorf("err:%v", reflect.TypeOf(x))
 			}
 
-			if t, ok := table.(Tabler); ok {
-				log.Errorf("table: %s", t.TableName())
-			}
+			log.Errorf("table: %s", table.TableName())
 			return err
 		}
 	}

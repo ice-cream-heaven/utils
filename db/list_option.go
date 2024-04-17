@@ -500,7 +500,7 @@ func (p *ListOptionProcessor) Process(tx *Scoop, values any) (*Page, error) {
 			err := handler(option.Value)
 			if err != nil {
 				log.Errorf("err:%v", err)
-				return nil, err
+				return p.ListOption.Page(), err
 			}
 		}
 	}
@@ -528,14 +528,14 @@ func (p *ListOptionProcessor) Process(tx *Scoop, values any) (*Page, error) {
 	err := tx.Find(values).Error
 	if err != nil {
 		log.Errorf("err:%v", err)
-		return nil, err
+		return p.ListOption.Page(), err
 	}
 
 	if p.ListOption.ShowTotal {
 		page.Total, err = tx.Count()
 		if err != nil {
 			log.Errorf("err:%v", err)
-			return nil, err
+			return p.ListOption.Page(), err
 		}
 	}
 
